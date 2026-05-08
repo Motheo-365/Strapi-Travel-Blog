@@ -30,7 +30,7 @@
 
     // fetch from Strapi (auto runs)
     const { data } = await useFetch(
-    `${strapiUrl}/api::article`,
+    `${strapiUrl}/api/articles`,
     {
         query: {
         populate: "*",

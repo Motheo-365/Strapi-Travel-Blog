@@ -6,7 +6,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      strapiUrl: import.meta.env.STRAPI_URL || 'https://successful-victory-6dcfa50988.strapiapp.com' || 'http://localhost:1337'
+      strapiUrl: import.meta.env.STRAPI_URL || 'http://localhost:1337'
     }
   }
 })
