@@ -1,6 +1,7 @@
+<!-- Motheo Morena u24666981 -->
+
 <template>
   <div class="contact-page">
-
     <!-- HERO -->
     <section class="hero">
       <h1>Contact Us</h1>
@@ -11,30 +12,28 @@
 
     <!-- FORM CARD -->
     <section class="form-wrapper">
+      <Card>
+        <form class="form">
 
-      <form class="form">
+          <div class="input-group">
+            <label>Name</label>
+            <input type="text" placeholder="Your Name" />
+          </div>
 
-        <div class="input-group">
-          <label>Name</label>
-          <input type="text" placeholder="Your Name" />
-        </div>
+          <div class="input-group">
+            <label>Email</label>
+            <input type="email" placeholder="Email Address" />
+          </div>
 
-        <div class="input-group">
-          <label>Email</label>
-          <input type="email" placeholder="Email Address" />
-        </div>
+          <div class="input-group">
+            <label>Message</label>
+            <textarea rows="6" placeholder="Your Message"></textarea>
+          </div>
 
-        <div class="input-group">
-          <label>Message</label>
-          <textarea rows="6" placeholder="Your Message"></textarea>
-        </div>
-
-        <button type="submit">Send Message</button>
-
-      </form>
-
+          <button type="submit">Send Message</button>
+        </form>
+      </Card>
     </section>
-
   </div>
 </template>
 

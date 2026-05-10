@@ -1,3 +1,5 @@
+<!-- Motheo Morena u24666981 -->
+
 <script setup async>
   const config = useRuntimeConfig()
   const strapiUrl = config.public.strapiUrl || ''
@@ -82,7 +84,9 @@
         :to="`/posts/${post.documentId}`"
         class="card-link"
       >
-        <article class="post-card">
+        <Card>
+          
+          <!-- IMAGE -->
           <div class="img-container">
             <NuxtImg
               v-if="post.image?.url"
@@ -90,24 +94,32 @@
               class="card-img"
               alt="Post thumbnail"
             />
+
             <span class="category-tag">
               {{ post.category?.type || 'Travel' }}
             </span>
           </div>
 
+          <!-- CONTENT -->
           <div class="card-body">
-            <p v-if="post.author" :class="author">{{ post.author.name }}</p>
-            <h2 class="card-title">{{ post.title }}</h2>
-            
+            <p v-if="post.author">
+              {{ post.author.name }}
+            </p>
+
+            <h2 class="card-title">
+              {{ post.title }}
+            </h2>
+
             <p class="card-excerpt">
-              {{ 
-                Array.isArray(post.content) && post.content[0]?.children?.[0]?.text 
+              {{
+                Array.isArray(post.content) && post.content[0]?.children?.[0]?.text
                   ? post.content[0].children[0].text.split(' ').slice(0, 20).join(' ') + '...'
-                  : 'No content available...' 
+                  : 'No content available...'
               }}
             </p>
           </div>
-        </article>
+
+        </Card>
       </NuxtLink>
     </section>
 

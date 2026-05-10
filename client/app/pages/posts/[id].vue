@@ -1,3 +1,5 @@
+<!-- Motheo Morena u24666981 -->
+
 <script setup>
   const route = useRoute()
   const config = useRuntimeConfig()

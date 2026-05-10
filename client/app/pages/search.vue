@@ -1,3 +1,5 @@
+<!-- Motheo Morena u24666981 -->
+
 <script setup async>
   const config = useRuntimeConfig()
   const strapiUrl = config.public.strapiUrl || ''
@@ -17,7 +19,6 @@
     loading.value = true
 
     try {
-      // We use the 'query' object property to let Nuxt/Nitro handle the encoding
       const response = await $fetch(`${strapiUrl}/api/articles`, {
         params: {
           'filters[$or][0][title][$containsi]': query.value,
@@ -36,10 +37,12 @@
       })
 
       results.value = response?.data || []
-    } catch (err) {
+    } 
+    catch (err) {
       console.error("Search error:", err)
       results.value = []
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -81,30 +84,39 @@
         :to="`/posts/${post.documentId}`"
         class="card-link"
       >
-        <article class="card">
+        <Card>
+
+          <!-- IMAGE -->
           <div class="img">
             <NuxtImg
               v-if="post.image?.url"
               :src="strapiUrl + post.image.url"
               class="img-thumb"
             />
+
             <span class="tag">
               {{ post.category?.type || 'Travel' }}
             </span>
           </div>
 
+          <!-- CONTENT -->
           <div class="content">
-            <p v-if="post.author" :class="author">{{ post.author.name }}</p>
+            <p v-if="post.author">
+              {{ post.author.name }}
+            </p>
+
             <h2>{{ post.title }}</h2>
+
             <p>
-              {{ 
-                Array.isArray(post.content) && post.content[0]?.children?.[0]?.text 
+              {{
+                Array.isArray(post.content) && post.content[0]?.children?.[0]?.text
                   ? post.content[0].children[0].text.split(' ').slice(0, 20).join(' ') + '...'
-                  : 'No content available...' 
+                  : 'No content available...'
               }}
             </p>
           </div>
-        </article>
+
+        </Card>
       </NuxtLink>
     </section>
 

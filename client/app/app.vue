@@ -1,3 +1,5 @@
+<!-- Motheo Morena u24666981 -->
+
 <template>
   <div>
     <Nav />
@@ -24,7 +26,6 @@
     --font-simple: 'Montserrat', sans-serif;
   }
 
-  /* GLOBAL RESET */
   body {
     margin: 0;
     background: var(--color-bg);
@@ -33,19 +34,16 @@
     line-height: 1.7;
   }
 
-  /* HEADINGS */
   h1, h2, h3 {
     font-family: var(--font-fancy);
     font-weight: 700;
     margin: 0;
   }
 
-  /* LINKS DEFAULT */
   a {
     color: inherit;
   }
 
-  /* CATEGORY TAG GLOBAL STYLE */
   .category-tag {
     letter-spacing: 0.15rem;
     text-transform: uppercase;

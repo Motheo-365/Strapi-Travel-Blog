@@ -1,3 +1,5 @@
+<!-- Motheo Morena u24666981 -->
+
 <script setup async>
   const config = useRuntimeConfig()
   const strapiUrl = config.public.strapiUrl || ''
@@ -31,39 +33,45 @@
 
     <!-- BLOG POSTS GRID -->
     <section v-if="posts.length" class="blog-grid">
-      <NuxtLink
-        v-for="post in posts"
-        :key="post.id"
-        :to="`/posts/${post.documentId}`"
-        class="card-link"
-      >
-        <article class="post-card">
-          <div class="img-container">
-            <NuxtImg
-              v-if="post.image?.url"
-              :src="strapiUrl + post.image.url"
-              class="card-img"
-              alt="Post thumbnail"
-            />
-            <span class="category-tag">
-              {{ post.category?.type || 'Travel' }}
-            </span>
-          </div>
+        <NuxtLink
+            v-for="post in posts"
+            :key="post.id"
+            :to="`/posts/${post.documentId}`"
+            class="card-link"
+        >
+            <Card>
+            <!-- IMAGE -->
+            <div class="img-container">
+                <NuxtImg
+                v-if="post.image?.url"
+                :src="strapiUrl + post.image.url"
+                class="card-img"
+                alt="Post thumbnail"
+                />
 
-          <div class="card-body">
-            <p v-if="post.author" :class="author">{{ post.author.name }}</p>
-            <h2 class="card-title">{{ post.title }}</h2>
-            
-            <p class="card-excerpt">
-              {{ 
-                Array.isArray(post.content) && post.content[0]?.children?.[0]?.text 
-                  ? post.content[0].children[0].text.split(' ').slice(0, 20).join(' ') + '...'
-                  : 'No content available...' 
-              }}
-            </p>
-          </div>
-        </article>
-      </NuxtLink>
+                <span class="category-tag">
+                {{ post.category?.type || 'Travel' }}
+                </span>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="card-body">
+                <p v-if="post.author">
+                {{ post.author.name }}
+                </p>
+
+                <h2 class="card-title">{{ post.title }}</h2>
+
+                <p class="card-excerpt">
+                {{
+                    Array.isArray(post.content) && post.content[0]?.children?.[0]?.text
+                    ? post.content[0].children[0].text.split(' ').slice(0, 20).join(' ') + '...'
+                    : 'No content available...'
+                }}
+                </p>
+            </div>
+            </Card>
+        </NuxtLink>
     </section>
 
   </div>
