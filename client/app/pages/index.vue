@@ -5,7 +5,7 @@
   const currentSlide = ref(0)
 
   const { data: articles, pending, error } = await useFetch(
-    `${strapiUrl}/api/articles?populate=*`
+    `${strapiUrl}/api/articles?fields[0]=title&fields[1]=content&fields[2]=documentId&populate[image][populate]=*&populate[author][fields]=name&populate[category][fields]=type`
   )
 
   const posts = computed(() =>
@@ -91,14 +91,19 @@
               alt="Post thumbnail"
             />
             <span class="category-tag">
-              {{ post.category?.name || 'Travel' }}
+              {{ post.category?.type || 'Travel' }}
             </span>
           </div>
 
           <div class="card-body">
             <h2 class="card-title">{{ post.title }}</h2>
+            
             <p class="card-excerpt">
-              {{ post.description?.slice(0, 100) || 'No description available...' }}...
+              {{ 
+                Array.isArray(post.content) && post.content[0]?.children?.[0]?.text 
+                  ? post.content[0].children[0].text.split(' ').slice(0, 20).join(' ') + '...'
+                  : 'No content available...' 
+              }}
             </p>
           </div>
         </article>
@@ -109,7 +114,6 @@
 </template>
 
 <style scoped>
-    /* Main Container */
     .blog-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -117,7 +121,6 @@
         font-family: system-ui, -apple-system, sans-serif;
     }
 
-    /* HERO SECTION */
     .hero-section {
         position: relative;
         margin-bottom: 40px;

@@ -7,26 +7,24 @@
 
 <style scoped>
     .base-card {
-        width: 18vw;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        backdrop-filter: blur(12px);
-        padding: 5%;
-        border-radius: 14px;
-        text-align: left;
-        margin: 2%;
-        font-size: 0.85rem;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        position: relative;
-        transition: 0.25s;
+    width: 18vw;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+
+    padding: 5%;
+    border-radius: 14px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    transition: 0.25s ease;
     }
 
     .base-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 0 25px var(--glow);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
     }
 
     .base-card::after {

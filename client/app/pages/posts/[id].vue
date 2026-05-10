@@ -3,30 +3,25 @@
   const config = useRuntimeConfig()
   const strapiUrl = config.public.strapiUrl || ''
 
-  // Fetch article
   const { data: article, pending, error } = await useFetch(
     `${strapiUrl}/api/articles/${route.params.id}?populate=*`
   )
 
   const post = computed(() => {
-    const res = article.value?.data
-    if (Array.isArray(res)) {
-      return res[0]
-    }
-    return res || null
+    return article.value?.data || null
   })
 </script>
 
 <template>
   <div class="blog-page">
 
-    <!-- LOADING -->
+    <!-- LOADING STATE -->
     <div v-if="pending" class="status-msg">
       <div class="spinner"></div>
       <p>Loading your adventure...</p>
     </div>
 
-    <!-- ERROR -->
+    <!-- ERROR STATE -->
     <div v-else-if="error || !post" class="error-container">
       <h2>Oops! Post not found.</h2>
       <p>We couldn't find the article you're looking for.</p>
@@ -46,8 +41,9 @@
           <div class="hero-text-container">
             <h1>{{ post.title }}</h1>
             <p class="meta">
+              <span v-if="post.author">By {{ post.author.name }} • </span>
               <span v-if="post.country">{{ post.country }} • </span>
-              {{ new Date(post.createdAt).toLocaleDateString() }}
+              {{ post.createdAt ? new Date(post.createdAt).toLocaleDateString() : '' }}
             </p>
           </div>
         </div>
@@ -56,8 +52,8 @@
       <!-- CONTENT BODY -->
       <div class="content-wrapper">
         <article class="main-content">
-          <div class="category-pill">
-            {{ post.category?.name || 'Travel' }}
+          <div v-if="post.category" class="category-pill">
+            {{ post.category.type }}
           </div>
 
           <div class="rich-text">
@@ -65,7 +61,11 @@
               <div v-for="(block, i) in post.content" :key="i">
                 
                 <p v-if="block.type === 'paragraph'">
-                  {{ block.children?.[0]?.text }}
+                  <template v-for="(child, j) in block.children" :key="j">
+                    <strong v-if="child.bold">{{ child.text }}</strong>
+                    <em v-else-if="child.italic">{{ child.text }}</em>
+                    <span v-else>{{ child.text }}</span>
+                  </template>
                 </p>
 
                 <ul v-else-if="block.type === 'list'">
@@ -74,8 +74,13 @@
                   </li>
                 </ul>
 
+                <h2 v-else-if="block.type === 'heading'">
+                  {{ block.children?.[0]?.text }}
+                </h2>
+
               </div>
             </template>
+
             <template v-else>
               <p>{{ post.content }}</p>
             </template>
