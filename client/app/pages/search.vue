@@ -1,39 +1,48 @@
 <script setup>
-const config = useRuntimeConfig()
-const strapiUrl = config.public.strapiUrl || ''
+  const config = useRuntimeConfig()
+  const strapiUrl = config.public.strapiUrl || ''
 
-const query = ref('')
-const results = ref([])
-const loading = ref(false)
+  const query = ref('')
+  const results = ref([])
+  const loading = ref(false)
 
-let timeout = null
+  let timeout = null
 
-const searchArticles = async () => {
-  if (!query.value.trim()) {
-    results.value = []
-    return
+  const searchArticles = async () => {
+    if (!query.value.trim()) {
+      results.value = []
+      return
+    }
+
+    loading.value = true
+
+    try {
+      // We use the 'query' object property to let Nuxt/Nitro handle the encoding
+      const response = await $fetch(`${strapiUrl}/api/articles`, {
+        params: {
+          'filters[title][$containsi]': query.value,
+          'fields[0]': 'title',
+          'fields[1]': 'content',
+          'fields[2]': 'documentId',
+          'populate[image][populate]': '*',
+          'populate[category][fields]': 'type'
+        }
+      })
+
+      results.value = response?.data || []
+    } catch (err) {
+      console.error("Search error:", err)
+      results.value = []
+    } finally {
+      loading.value = false
+    }
   }
 
-  loading.value = true
-
-  try {
-    const { data } = await useFetch(
-      `${strapiUrl}/api/articles?filters[title][$containsi]=${query.value}&populate[image]=*&populate[category]=*`
-    )
-
-    results.value = data.value?.data || []
-  } catch (err) {
-    results.value = []
-  }
-
-  loading.value = false
-}
-
-// debounce typing
-watch(query, () => {
-  clearTimeout(timeout)
-  timeout = setTimeout(searchArticles, 400)
-})
+  // debounce typing
+  watch(query, () => {
+    clearTimeout(timeout)
+    timeout = setTimeout(searchArticles, 400)
+  })
 </script>
 
 <template>
@@ -46,6 +55,7 @@ watch(query, () => {
 
       <input
         v-model="query"
+        @keyup.enter="searchArticles"
         type="text"
         placeholder="Search for Cape Town, beaches, mountains..."
         class="search-input"
@@ -59,7 +69,6 @@ watch(query, () => {
 
     <!-- RESULTS -->
     <section v-else class="grid">
-
       <NuxtLink
         v-for="post in results"
         :key="post.id"
@@ -67,7 +76,6 @@ watch(query, () => {
         class="card-link"
       >
         <article class="card">
-
           <div class="img">
             <NuxtImg
               v-if="post.image?.url"
@@ -82,13 +90,15 @@ watch(query, () => {
           <div class="content">
             <h2>{{ post.title }}</h2>
             <p>
-              {{ post.description?.slice(0, 120) || 'No description available...' }}...
+              {{ 
+                Array.isArray(post.content) && post.content[0]?.children?.[0]?.text 
+                  ? post.content[0].children[0].text.split(' ').slice(0, 20).join(' ') + '...'
+                  : 'No content available...' 
+              }}
             </p>
           </div>
-
         </article>
       </NuxtLink>
-
     </section>
 
     <!-- EMPTY STATE -->
@@ -101,112 +111,115 @@ watch(query, () => {
 
 <style scoped>
     .search-page {
-    font-family: system-ui, -apple-system, sans-serif;
-    background: #f8f9fb;
-    min-height: 100vh;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f8f9fb;
+      min-height: 100vh;
     }
 
     /* HERO */
     .hero {
-    text-align: center;
-    padding: 70px 20px 40px;
-    background: linear-gradient(to bottom, #111, #1f1f1f);
-    color: white;
+      text-align: center;
+      padding: 70px 20px 40px;
+      background: linear-gradient(to bottom, #111, #1f1f1f);
+      color: white;
     }
 
     .hero h1 {
-    font-size: 2.8rem;
-    margin-bottom: 10px;
+      font-size: 2.8rem;
+      margin-bottom: 10px;
     }
 
     .hero p {
-    opacity: 0.8;
-    margin-bottom: 20px;
+      opacity: 0.8;
+      margin-bottom: 20px;
     }
 
     /* SEARCH INPUT */
     .search-input {
-    width: 100%;
-    max-width: 500px;
-    padding: 14px 16px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    font-size: 1rem;
+      width: 100%;
+      max-width: 500px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
     }
 
     /* GRID */
     .grid {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 0 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
     }
 
-    /* CARD */
     .card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-    transition: 0.2s ease;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      transition: 0.2s ease;
     }
 
     .card:hover {
-    transform: translateY(-5px);
+      transform: translateY(-5px);
+    }
+
+    .card-link {
+      text-decoration: none;
     }
 
     .img {
-    position: relative;
-    height: 180px;
+      position: relative;
+      height: 180px;
     }
 
     .img-thumb {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .tag {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: black;
-    color: white;
-    padding: 4px 10px;
-    font-size: 0.75rem;
-    text-transform: uppercase;
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: black;
+      color: white;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
     }
 
     .content {
-    padding: 15px;
+      padding: 15px;
     }
 
     .content h2 {
-    font-size: 1.1rem;
-    margin-bottom: 8px;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
     }
 
     /* SKELETON */
     .skeleton {
-    height: 260px;
-    background: #eaeaea;
-    border-radius: 12px;
-    animation: pulse 1.5s infinite;
+      height: 260px;
+      background: #eaeaea;
+      border-radius: 12px;
+      animation: pulse 1.5s infinite;
     }
 
     @keyframes pulse {
-    0% { background: #eee; }
-    50% { background: #ddd; }
-    100% { background: #eee; }
+      0% { background: #eee; }
+      50% { background: #ddd; }
+      100% { background: #eee; }
     }
 
     /* EMPTY */
     .empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: gray;
+      text-align: center;
+      padding: 60px 20px;
+      color: gray;
     }
 </style>
