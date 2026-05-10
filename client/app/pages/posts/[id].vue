@@ -12,6 +12,17 @@
   const post = computed(() => {
     return article.value?.data || null
   })
+  
+  const getImageUrl = (img) => {
+    if (!img) return ''
+
+    return (
+      img.url ||
+      img.data?.attributes?.url ||
+      img.attributes?.url ||
+      ''
+    )
+  }
 </script>
 
 <template>
@@ -35,10 +46,10 @@
       <!-- HERO -->
       <div class="hero">
         <NuxtImg
-          v-if="post.image?.url"
-          :src="strapiUrl + post.image.url"
-          class="hero-img"
+            v-if="getImageUrl(post.image)"
+            :src="strapiUrl + getImageUrl(post.image)"
         />
+
         <div class="hero-overlay">
           <div class="hero-text-container">
             <h1>{{ post.title }}</h1>

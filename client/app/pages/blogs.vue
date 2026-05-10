@@ -8,9 +8,19 @@
     `${strapiUrl}/api/articles?fields[0]=title&fields[1]=content&fields[2]=documentId&populate[image][populate]=*&populate[author][fields]=name&populate[category][fields]=type`
   )
 
-  const posts = computed(() =>
-    (articles.value?.data ?? []).filter(p => p?.image)
-  )
+    const posts = computed(() => {
+    const rawData = articles.value?.data || []
+
+    return rawData.map(post => ({
+        id: post.id,
+        documentId: post.documentId,
+        title: post.title,
+        content: post.content,
+        image: post.image,
+        author: post.author,
+        category: post.category
+    }))
+    })
 
   const featured = computed(() =>
     posts.value.slice(0, 5)

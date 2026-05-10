@@ -1,5 +1,3 @@
-<!-- Motheo Morena u24666981 -->
-
 <script setup async>
   const config = useRuntimeConfig()
   const strapiUrl = config.public.strapiUrl || ''
@@ -77,51 +75,51 @@
     </section>
 
     <!-- BLOG POSTS GRID -->
-    <section v-if="posts.length" class="blog-grid">
-      <NuxtLink
-        v-for="post in posts.slice(0, 3)"
-        :key="post.id"
-        :to="`/posts/${post.documentId}`"
-        class="card-link"
-      >
-        <Card>
-          
-          <!-- IMAGE -->
-          <div class="img-container">
-            <NuxtImg
-              v-if="post.image?.url"
-              :src="strapiUrl + post.image.url"
-              class="card-img"
-              alt="Post thumbnail"
-            />
+  <section v-if="posts.length" class="blog-grid">
+    <NuxtLink
+      v-for="post in posts.slice(0, 3)"
+      :key="post.id"
+      :to="`/posts/${post.documentId}`"
+      class="card-link"
+    >
+      <Card>
+        
+        <!-- IMAGE -->
+        <div class="img-container">
+          <NuxtImg
+            v-if="post.image?.url"
+            :src="strapiUrl + post.image.url"
+            class="card-img"
+            alt="Post thumbnail"
+          />
 
-            <span class="category-tag">
-              {{ post.category?.type || 'Travel' }}
-            </span>
-          </div>
+          <span class="category-tag">
+            {{ post.category?.type || 'Travel' }}
+          </span>
+        </div>
 
-          <!-- CONTENT -->
-          <div class="card-body">
-            <p v-if="post.author">
-              {{ post.author.name }}
-            </p>
+        <!-- CONTENT -->
+        <div class="card-body">
+          <p v-if="post.author">
+            {{ post.author.name }}
+          </p>
 
-            <h2 class="card-title">
-              {{ post.title }}
-            </h2>
+          <h2 class="card-title">
+            {{ post.title }}
+          </h2>
 
-            <p class="card-excerpt">
-              {{
-                Array.isArray(post.content) && post.content[0]?.children?.[0]?.text
-                  ? post.content[0].children[0].text.split(' ').slice(0, 20).join(' ') + '...'
-                  : 'No content available...'
-              }}
-            </p>
-          </div>
+          <p class="card-excerpt">
+            {{
+              Array.isArray(post.content) && post.content[0]?.children?.[0]?.text
+                ? post.content[0].children[0].text.split(' ').slice(0, 20).join(' ') + '...'
+                : 'No content available...'
+            }}
+          </p>
+        </div>
 
-        </Card>
-      </NuxtLink>
-    </section>
+      </Card>
+    </NuxtLink>
+  </section>
 
   </div>
 </template>

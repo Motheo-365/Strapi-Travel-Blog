@@ -1,0 +1,14 @@
+services:
+  strapi:
+    build: ./server
+    ports:
+      - "1337:1337"
+
+  nuxt:
+    build: ./client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - strapi
+    environment:
+      NUXT_PUBLIC_STRAPI_URL: http://strapi:1337
