@@ -1,4 +1,4 @@
-<script setup>
+<script setup async>
   const config = useRuntimeConfig()
   const strapiUrl = config.public.strapiUrl || ''
 
@@ -20,12 +20,18 @@
       // We use the 'query' object property to let Nuxt/Nitro handle the encoding
       const response = await $fetch(`${strapiUrl}/api/articles`, {
         params: {
-          'filters[title][$containsi]': query.value,
+          'filters[$or][0][title][$containsi]': query.value,
+          'filters[$or][1][country][$containsi]': query.value,
+          'filters[$or][2][author][name][$containsi]': query.value,
+          'filters[$or][3][category][type][$containsi]': query.value,
+
           'fields[0]': 'title',
           'fields[1]': 'content',
           'fields[2]': 'documentId',
-          'populate[image][populate]': '*',
-          'populate[category][fields]': 'type'
+
+          'populate[image]': true,
+          'populate[category]': true,
+          'populate[author]': true
         }
       })
 
