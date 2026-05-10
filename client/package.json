@@ -10,6 +10,11 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/image": "^2.0.0",
+    "@nuxtjs/apollo": "^5.0.0-alpha.16",
+    "@nuxtjs/strapi": "^2.2.0",
+    "graphql": "^16.14.0",
+    "graphql-tag": "^2.12.6",
     "nuxt": "^4.4.4",
     "vue": "^3.5.33",
     "vue-router": "^5.0.6"

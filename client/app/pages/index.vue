@@ -1,225 +1,295 @@
-<!-- Motheo Morena u24666981
- 
-    Page has:
-        - Interctive Slide:
-            - show of some of the things the blog has, e.g:
-                - Skiing and snowboarding in the swiss alps
-                - Beach break: Enjoy the coastline view of santorini
-                - Etc. Show sensationalised headings like that
-            - layout: 
-                - Large image with heading in center.
-                - At bottom of image, circles to show which 'slideshow' currently on
-                - make left-right, right-left scrolling
+<script setup async>
+const config = useRuntimeConfig()
+const strapiUrl = config.public.strapiUrl || ''
 
-        - Blog Posts:
-            - The most recent on the right
-            - 3 other on the right
-            - The rest on the bottom. Displaying:
-                - Picture (with tag by bottom left)
-                - Title
-                - short preview of content
-            - These blogs should all be links to the main blogs specific page
--->
-<script setup>
-    const config = useRuntimeConfig()
-    const strapiUrl = config.public.strapiUrl
+const currentSlide = ref(0)
 
-    const posts = ref([])
-    const featured = ref([])
-    const currentSlide = ref(0)
+const { data: articles, pending, error } = await useFetch(
+  `${strapiUrl}/api/articles?populate=*`
+)
 
-    // fetch from Strapi (auto runs)
-    const { data } = await useFetch(
-    `${strapiUrl}/api/articles`,
-    {
-        query: {
-        populate: "*",
-        sort: "createdAt:desc"
-        }
-    }
-    )
+const posts = computed(() =>
+  (articles.value?.data ?? []).filter(p => p?.image)
+)
 
-    // safely assign data
-    posts.value = data.value?.data || []
-    featured.value = posts.value.slice(0, 3)
+const featured = computed(() =>
+  posts.value.slice(0, 5)
+)
 
-    // slideshow
-    const nextSlide = () => {
-    currentSlide.value =
-        (currentSlide.value + 1) % featured.value.length
-    }
+const nextSlide = () => {
+  if (!featured.value.length) return
+  currentSlide.value = (currentSlide.value + 1) % featured.value.length
+}
 
-    const prevSlide = () => {
-    currentSlide.value =
-        (currentSlide.value - 1 + featured.value.length) % featured.value.length
-    }
+const prevSlide = () => {
+  if (!featured.value.length) return
+  currentSlide.value =
+    (currentSlide.value - 1 + featured.value.length) %
+    featured.value.length
+}
 </script>
 
 <template>
-  <div class="blog">
+  <div class="blog-container">
 
-    <!-- ================= HERO SLIDESHOW ================= -->
-    <div class="hero" v-if="featured.length">
-
-      <div class="slide">
-        <img
-          :src="strapiUrl + featured[currentSlide].attributes.image.data.attributes.url"
-          class="hero-img"
-        />
-
-        <div class="overlay">
-          <h1>{{ featured[currentSlide].attributes.title }}</h1>
-        </div>
-      </div>
-
-      <div class="controls">
-        <button @click="prevSlide">←</button>
-        <button @click="nextSlide">→</button>
-      </div>
-
-      <div class="dots">
-        <span
-          v-for="(item, index) in featured"
-          :key="index"
-          :class="{ active: index === currentSlide }"
-        />
-      </div>
-
+    <!-- ERROR STATE -->
+    <div v-if="error" class="error-message">
+      <p>Failed to load articles. Please try again later.</p>
     </div>
 
-    <!-- ================= BLOG GRID ================= -->
-    <div class="grid">
+    <!-- LOADING STATE -->
+    <div v-if="pending" class="blog-grid">
+      <div v-for="n in 6" :key="n" class="skeleton-card"></div>
+    </div>
 
+    <!-- HERO SLIDER -->
+    <section v-if="featured.length" class="hero-section">
+      <div class="slider-window">
+        <div class="slide-content">
+          <NuxtImg
+            v-if="featured[currentSlide]?.image?.url"
+            :src="strapiUrl + featured[currentSlide].image.url"
+            class="hero-img"
+            alt="Featured post image"
+          />
+          <div class="hero-overlay">
+            <h1>{{ featured[currentSlide]?.title }}</h1>
+          </div>
+        </div>
+
+        <!-- Navigation Arrows -->
+        <button class="nav-btn prev" @click="prevSlide" aria-label="Previous slide">←</button>
+        <button class="nav-btn next" @click="nextSlide" aria-label="Next slide">→</button>
+
+        <!-- Pagination Dots -->
+        <div class="dots-container">
+          <span
+            v-for="(_, index) in featured"
+            :key="index"
+            class="dot"
+            :class="{ active: index === currentSlide }"
+            @click="currentSlide = index"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOG POSTS GRID -->
+    <section v-if="posts.length" class="blog-grid">
       <NuxtLink
         v-for="post in posts"
         :key="post.id"
         :to="`/posts/${post.id}`"
         class="card-link"
       >
-
-        <Card>
-
-          <div class="img-wrapper">
-            <img
-              :src="strapiUrl + post.attributes.image.data.attributes.url"
+        <article class="post-card">
+          <div class="img-container">
+            <NuxtImg
+              v-if="post.image?.url"
+              :src="strapiUrl + post.image.url"
+              class="card-img"
+              alt="Post thumbnail"
             />
-
-            <div class="tag">
-              {{ post.attributes.category }}
-            </div>
+            <span class="category-tag">
+              {{ post.category?.name || 'Travel' }}
+            </span>
           </div>
 
-          <h2>{{ post.attributes.title }}</h2>
-
-          <p>
-            {{ post.attributes.description?.slice(0, 100) }}...
-          </p>
-
-        </Card>
-
+          <div class="card-body">
+            <h2 class="card-title">{{ post.title }}</h2>
+            <p class="card-excerpt">
+              {{ post.description?.slice(0, 100) || 'No description available...' }}...
+            </p>
+          </div>
+        </article>
       </NuxtLink>
-
-    </div>
+    </section>
 
   </div>
 </template>
 
 <style scoped>
-    .blog {
-        width: 100%;
+    /* Main Container */
+    .blog-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: system-ui, -apple-system, sans-serif;
     }
 
-    /* HERO */
-    .hero {
+    /* HERO SECTION */
+    .hero-section {
         position: relative;
-        height: 60vh;
+        margin-bottom: 40px;
+        border-radius: 12px;
         overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .slider-window {
+        position: relative;
+        height: 500px; /* Fixed height for consistency */
+        width: 100%;
     }
 
     .hero-img {
         width: 100%;
-        height: 60vh;
-        object-fit: cover;
+        height: 100%;
+        object-fit: cover; /* Ensures image fills space without distorting */
+        display: block;
     }
 
-    .overlay {
+    .hero-overlay {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(0,0,0,0.4);
         color: white;
-        font-size: 2rem;
-        text-align: center;
+        padding: 20px;
     }
 
-    /* controls */
-    .controls {
+    .hero-overlay h1 {
+        font-size: clamp(1.5rem, 5vw, 3rem);
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        max-width: 80%;
+    }
+
+    /* SLIDER CONTROLS */
+    .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.8);
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s;
+        z-index: 10;
+    }
+
+    .nav-btn:hover { background: white; }
+    .prev { left: 20px; }
+    .next { right: 20px; }
+
+    .dots-container {
         position: absolute;
         bottom: 20px;
-        width: 100%;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
-        justify-content: space-between;
-        padding: 0 20px;
+        gap: 8px;
+        z-index: 10;
     }
 
-    .controls button {
-        background: white;
-        border: none;
-        padding: 10px;
+    .dot {
+        width: 12px;
+        height: 12px;
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 50%;
         cursor: pointer;
     }
 
-    /* dots */
-    .dots {
+    .dot.active {
+        background: white;
+        transform: scale(1.2);
+    }
+
+    /* BLOG GRID */
+    .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .post-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 100%;
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+    }
+
+    .post-card:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Fixed Image Size for Cards */
+    .img-container {
+        position: relative;
+        width: 100%;
+        height: 200px; /* Fixed card image height */
+        overflow: hidden;
+    }
+
+    .card-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .category-tag {
         position: absolute;
         bottom: 10px;
-        width: 100%;
+        left: 10px;
+        background: #000;
+        color: #fff;
+        padding: 4px 12px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        margin: 0 0 10px 0;
+        font-size: 1.25rem;
+        line-height: 1.3;
+    }
+
+    .card-excerpt {
+        font-size: 0.95rem;
+        color: #666;
+        line-height: 1.5;
+    }
+
+    /* UTILITIES */
+    .error-message {
+        color: #d32f2f;
+        background: #ffebee;
+        padding: 20px;
+        border-radius: 8px;
         text-align: center;
     }
 
-    .dots span {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        margin: 5px;
-        border-radius: 50%;
-        background: gray;
+    .skeleton-card {
+        height: 350px;
+        background: #f0f0f0;
+        border-radius: 8px;
+        animation: pulse 1.5s infinite ease-in-out;
     }
 
-    .dots .active {
-        background: white;
-    }
-
-    /* GRID */
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        padding: 30px;
-    }
-
-    .tag {
-        position: absolute;
-        background: black;
-        color: white;
-        padding: 5px 10px;
-        font-size: 0.7rem;
-    }
-
-    .card h2 {
-        padding: 10px;
-        font-size: 1.1rem;
-    }
-
-    .card p {
-        padding: 0 10px 15px;
-        font-size: 0.85rem;
-        color: gray;
+    @keyframes pulse {
+        0% { background-color: #f0f0f0; }
+        50% { background-color: #e0e0e0; }
+        100% { background-color: #f0f0f0; }
     }
 </style>
