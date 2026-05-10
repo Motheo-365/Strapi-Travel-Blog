@@ -5,3 +5,29 @@ Strapi itself was straightforward to set up, but integrating it with Docker adde
 Through this process, I learned how powerful containerisation is for separating concerns between services and ensuring consistency across development environments. I also gained a better understanding of API communication, environment configuration, and debugging multi-service applications.
 
 Overall, Docker taught me discipline in structuring projects properly, while Strapi helped me understand headless CMS architecture and how modern web applications manage content dynamically.
+
+a3-production-cbee.up.railway.app
+
+Github Repo:
+    https://github.com/Motheo-365/A3
+
+Setup Commands:
+    git clone https://github.com/Motheo-365/A3.git
+
+    cd server
+
+    docker compose up --build
+
+    docker compose up -d --build
+
+    docker compose down
+
+    docker compose down -v
+
+If Strapi needs admin setup:
+    http://localhost:1337/admin
+
+If Nuxt runs separately (optional):
+    cd client
+    npm install
+    npm run dev
