@@ -1,32 +1,32 @@
 <script setup async>
-const config = useRuntimeConfig()
-const strapiUrl = config.public.strapiUrl || ''
+  const config = useRuntimeConfig()
+  const strapiUrl = config.public.strapiUrl || ''
 
-const currentSlide = ref(0)
+  const currentSlide = ref(0)
 
-const { data: articles, pending, error } = await useFetch(
-  `${strapiUrl}/api/articles?populate=*`
-)
+  const { data: articles, pending, error } = await useFetch(
+    `${strapiUrl}/api/articles?populate=*`
+  )
 
-const posts = computed(() =>
-  (articles.value?.data ?? []).filter(p => p?.image)
-)
+  const posts = computed(() =>
+    (articles.value?.data ?? []).filter(p => p?.image)
+  )
 
-const featured = computed(() =>
-  posts.value.slice(0, 5)
-)
+  const featured = computed(() =>
+    posts.value.slice(0, 5)
+  )
 
-const nextSlide = () => {
-  if (!featured.value.length) return
-  currentSlide.value = (currentSlide.value + 1) % featured.value.length
-}
+  const nextSlide = () => {
+    if (!featured.value.length) return
+    currentSlide.value = (currentSlide.value + 1) % featured.value.length
+  }
 
-const prevSlide = () => {
-  if (!featured.value.length) return
-  currentSlide.value =
-    (currentSlide.value - 1 + featured.value.length) %
-    featured.value.length
-}
+  const prevSlide = () => {
+    if (!featured.value.length) return
+    currentSlide.value =
+      (currentSlide.value - 1 + featured.value.length) %
+      featured.value.length
+  }
 </script>
 
 <template>
@@ -79,7 +79,7 @@ const prevSlide = () => {
       <NuxtLink
         v-for="post in posts"
         :key="post.id"
-        :to="`/posts/${post.id}`"
+        :to="`/posts/${post.documentId}`"
         class="card-link"
       >
         <article class="post-card">
@@ -128,14 +128,14 @@ const prevSlide = () => {
 
     .slider-window {
         position: relative;
-        height: 500px; /* Fixed height for consistency */
+        height: 500px;
         width: 100%;
     }
 
     .hero-img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Ensures image fills space without distorting */
+        object-fit: cover;
         display: block;
     }
 
@@ -233,7 +233,7 @@ const prevSlide = () => {
     .img-container {
         position: relative;
         width: 100%;
-        height: 200px; /* Fixed card image height */
+        height: 200px;
         overflow: hidden;
     }
 
@@ -271,7 +271,6 @@ const prevSlide = () => {
         line-height: 1.5;
     }
 
-    /* UTILITIES */
     .error-message {
         color: #d32f2f;
         background: #ffebee;

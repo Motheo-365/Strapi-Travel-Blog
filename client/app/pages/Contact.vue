@@ -21,48 +21,48 @@
 
 <style scoped>
     .contact {
-    max-width: 700px;
-    margin: 60px auto;
-    padding: 20px;
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 20px;
     }
 
     h1 {
-    text-align: center;
-    font-size: 2.5rem;
+      text-align: center;
+      font-size: 2.5rem;
     }
 
     .subtitle {
-    text-align: center;
-    color: gray;
-    margin-bottom: 30px;
+      text-align: center;
+      color: gray;
+      margin-bottom: 30px;
     }
 
     /* FORM */
     .form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
 
     input,
     textarea {
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
     }
 
     button {
-    padding: 12px;
-    border: none;
-    background: black;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
+      padding: 12px;
+      border: none;
+      background: black;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
     }
 
     button:hover {
-    background: #333;
+      background: #333;
     }
 </style>
