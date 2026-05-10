@@ -1,0 +1,7 @@
+Working with Docker and Strapi was both challenging and insightful. At first, understanding how Docker containerises applications was difficult, especially how services like the frontend (Nuxt.js) and backend (Strapi) communicate through networks. I initially struggled with port conflicts and environment variables not correctly pointing to the Strapi API inside the container, which caused repeated “connection refused” errors.
+
+Strapi itself was straightforward to set up, but integrating it with Docker added complexity. I had to learn how to properly configure volumes so that data persisted even when containers were rebuilt. Another major challenge was making sure the NUXT_PUBLIC_STRAPI_URL environment variable correctly pointed to the Strapi service name (e.g., http://strapi:1337) instead of localhost, which only works outside Docker.
+
+Through this process, I learned how powerful containerisation is for separating concerns between services and ensuring consistency across development environments. I also gained a better understanding of API communication, environment configuration, and debugging multi-service applications.
+
+Overall, Docker taught me discipline in structuring projects properly, while Strapi helped me understand headless CMS architecture and how modern web applications manage content dynamically.

@@ -2,10 +2,8 @@ FROM node:22-slim
 
 WORKDIR /app
 
-# Copy both package.json AND package-lock.json
 COPY package*.json ./
-
-RUN npm install --include=dev --ignore-scripts
+RUN npm install
 
 COPY . .
 
