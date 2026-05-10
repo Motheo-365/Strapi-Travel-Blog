@@ -94,6 +94,7 @@
           </div>
 
           <div class="content">
+            <p v-if="post.author" :class="author">{{ post.author.name }}</p>
             <h2>{{ post.title }}</h2>
             <p>
               {{ 

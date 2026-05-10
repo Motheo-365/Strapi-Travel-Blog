@@ -28,9 +28,9 @@
     <div class="links">
       <NuxtLink to="/search" :class="{active: isActive('/search')}">🔎︎</NuxtLink>
       
-      <NuxtLink to="/" :class="{ active: isActive('/') }">
-        Home
-      </NuxtLink>
+      <NuxtLink to="/" :class="{ active: isActive('/') }">Home </NuxtLink>
+
+      <NuxtLink to="/blogs" :class="{active: isActive('/blogs')}">Blogs</NuxtLink>
 
       <!-- DROPDOWN -->
       <div class="dropdown" @mouseleave="closeDropdown">

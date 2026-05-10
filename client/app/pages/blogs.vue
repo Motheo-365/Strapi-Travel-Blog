@@ -2,8 +2,6 @@
   const config = useRuntimeConfig()
   const strapiUrl = config.public.strapiUrl || ''
 
-  const currentSlide = ref(0)
-
   const { data: articles, pending, error } = await useFetch(
     `${strapiUrl}/api/articles?fields[0]=title&fields[1]=content&fields[2]=documentId&populate[image][populate]=*&populate[author][fields]=name&populate[category][fields]=type`
   )
@@ -16,17 +14,6 @@
     posts.value.slice(0, 5)
   )
 
-  const nextSlide = () => {
-    if (!featured.value.length) return
-    currentSlide.value = (currentSlide.value + 1) % featured.value.length
-  }
-
-  const prevSlide = () => {
-    if (!featured.value.length) return
-    currentSlide.value =
-      (currentSlide.value - 1 + featured.value.length) %
-      featured.value.length
-  }
 </script>
 
 <template>
@@ -42,42 +29,10 @@
       <div v-for="n in 6" :key="n" class="skeleton-card"></div>
     </div>
 
-    <!-- HERO SLIDER -->
-    <section v-if="featured.length" class="hero-section">
-      <div class="slider-window">
-        <div class="slide-content">
-          <NuxtImg
-            v-if="featured[currentSlide]?.image?.url"
-            :src="strapiUrl + featured[currentSlide].image.url"
-            class="hero-img"
-            alt="Featured post image"
-          />
-          <div class="hero-overlay">
-            <h1>{{ featured[currentSlide]?.title }}</h1>
-          </div>
-        </div>
-
-        <!-- Navigation Arrows -->
-        <button class="nav-btn prev" @click="prevSlide" aria-label="Previous slide">←</button>
-        <button class="nav-btn next" @click="nextSlide" aria-label="Next slide">→</button>
-
-        <!-- Pagination Dots -->
-        <div class="dots-container">
-          <span
-            v-for="(_, index) in featured"
-            :key="index"
-            class="dot"
-            :class="{ active: index === currentSlide }"
-            @click="currentSlide = index"
-          />
-        </div>
-      </div>
-    </section>
-
     <!-- BLOG POSTS GRID -->
     <section v-if="posts.length" class="blog-grid">
       <NuxtLink
-        v-for="post in posts.slice(0, 3)"
+        v-for="post in posts"
         :key="post.id"
         :to="`/posts/${post.documentId}`"
         class="card-link"
