@@ -1,18 +1,27 @@
 <!-- Motheo Morena u24666981 -->
 <script setup>
   const route = useRoute()
-  const isActive = (path) => route.path === path
-
   const dropdownOpen = ref(false)
+
+  let closeTimer = null
+
+  const isActive = (paths) => {
+    const pathArray = Array.isArray(paths) ? paths : [paths]
+    return pathArray.some(path => {
+      if (path === '/') return route.path === '/'
+      return route.path.startsWith(path)
+    })
+  }
 
   const toggleDropdown = () => {
     dropdownOpen.value = !dropdownOpen.value
   }
 
   const closeDropdown = () => {
-    closeTimer = setTimeout( () => {
+    if (closeTimer) clearTimeout(closeTimer)
+    closeTimer = setTimeout(() => {
       dropdownOpen.value = false
-    }, 1500)
+    }, 1000)
   }
 </script>
 
@@ -30,7 +39,7 @@
       
       <NuxtLink to="/" :class="{ active: isActive('/') }">Home </NuxtLink>
 
-      <NuxtLink to="/blogs" :class="{active: isActive('/blogs')}">Blogs</NuxtLink>
+      <NuxtLink to="/blogs" :class="{active: isActive('/blogs', '/posts')}">Blogs</NuxtLink>
 
       <!-- DROPDOWN -->
       <div class="dropdown" @mouseleave="closeDropdown">
