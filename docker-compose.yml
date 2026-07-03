@@ -18,4 +18,4 @@ services:
     depends_on:
       - strapi
     environment:
-      NUXT_PUBLIC_STRAPI_URL: http://strapi:1337
+      NUXT_PUBLIC_STRAPI_URL: https://strapi-travel-blog-production.up.railway.app
