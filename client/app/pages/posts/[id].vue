@@ -43,7 +43,7 @@
     <div v-else>
       <!-- HERO -->
       <div class="hero">
-        <img
+        <NuxtImg
             v-if="getImageUrl(post.image)"
             :src="strapiUrl + getImageUrl(post.image)"
             class="hero-img"

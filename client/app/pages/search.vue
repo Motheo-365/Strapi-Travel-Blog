@@ -86,7 +86,7 @@
 
           <!-- IMAGE -->
           <div class="img">
-            <img
+            <NuxtImg
               v-if="post.image?.url"
               :src="strapiUrl + post.image.url"
               class="img-thumb"
