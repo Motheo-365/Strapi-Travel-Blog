@@ -7,13 +7,13 @@
 <style scoped>
   .base-card {
     position: relative;
-    width: 90%;
+    width: 80%;
     height: 90%;
     background: var(--color-card);
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-md);
 
-    padding: 8%;
+    padding: 1.5rem;
     border-radius: 14px;
 
     display: flex;

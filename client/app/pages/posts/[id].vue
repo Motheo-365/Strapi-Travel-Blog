@@ -46,6 +46,7 @@
         <NuxtImg
             v-if="getImageUrl(post.image)"
             :src="strapiUrl + getImageUrl(post.image)"
+            class="hero-img"
         />
 
         <div class="hero-overlay">
