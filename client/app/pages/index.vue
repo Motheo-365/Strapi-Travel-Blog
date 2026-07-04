@@ -1,7 +1,10 @@
 <script setup async>
   const config = useRuntimeConfig()
-  const strapiUrl = config.public.strapiUrl || ''
 
+  console.log("Runtime COnfig: ", config.public);
+  
+  const strapiUrl = config.public.strapiUrl || ''
+  console.log("Strapi URL: ", config.public.strapiUrl);
   const currentSlide = ref(0)
 
   const { data: articles, pending, error } = await useFetch(

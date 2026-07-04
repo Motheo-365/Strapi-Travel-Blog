@@ -1,5 +1,3 @@
-<!-- Motheo Morena u24666981 -->
-
 <script setup async>
   const config = useRuntimeConfig()
   const strapiUrl = config.public.strapiUrl || ''

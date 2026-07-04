@@ -1,4 +1,3 @@
-<!-- Motheo Morena u24666981 -->
 <template>
   <div class="base-card">
     <slot />

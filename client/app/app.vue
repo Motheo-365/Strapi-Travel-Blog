@@ -1,5 +1,3 @@
-<!-- Motheo Morena u24666981 -->
-
 <template>
   <div>
     <Nav />
