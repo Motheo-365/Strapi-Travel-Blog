@@ -49,7 +49,7 @@
     <section v-if="featured.length" class="hero-section">
       <div class="slider-window">
         <div class="slide-content">
-          <NuxtImg
+          <img
             v-if="featured[currentSlide]?.image?.url"
             :src="strapiUrl + featured[currentSlide].image.url"
             class="hero-img"
@@ -89,7 +89,7 @@
         
         <!-- IMAGE -->
         <div class="img-container">
-          <NuxtImg
+          <img
             v-if="post.image?.url"
             :src="strapiUrl + post.image.url"
             class="card-img"

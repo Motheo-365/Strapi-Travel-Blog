@@ -50,7 +50,7 @@
             <Card>
             <!-- IMAGE -->
             <div class="img-container">
-                <NuxtImg
+                <img
                 v-if="post.image?.url"
                 :src="strapiUrl + post.image.url"
                 class="card-img"
